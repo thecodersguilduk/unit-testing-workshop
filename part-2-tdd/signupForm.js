@@ -12,6 +12,32 @@ function checkPassword(password) {
   return null;
 }
 
+function parseDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const [, y, m, d] = match.map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+  // Reject dates like 2023-02-30 that JS silently rolls over
+  if (date.getUTCFullYear() !== y || date.getUTCMonth() !== m - 1 || date.getUTCDate() !== d) return null;
+  return { y, m, d };
+}
+
+function ageOn(dob, today) {
+  let age = today.getUTCFullYear() - dob.y;
+  const month = today.getUTCMonth() + 1;
+  const day = today.getUTCDate();
+  if (month < dob.m || (month === dob.m && day < dob.d)) age--;
+  return age;
+}
+
+function checkDateOfBirth(value, today) {
+  if (isBlank(value)) return 'Date of birth is required';
+  const dob = parseDate(value.trim());
+  if (!dob) return 'Please enter a valid date';
+  if (ageOn(dob, today) < 16) return 'You must be at least 16 to sign up';
+  return null;
+}
+
 function validateSignup(form = {}, { today = new Date() } = {}) {
   const errors = {};
 
@@ -25,6 +51,9 @@ function validateSignup(form = {}, { today = new Date() } = {}) {
   if (passwordError) errors.password = passwordError;
 
   if (form.confirmPassword !== form.password) errors.confirmPassword = 'Passwords do not match';
+
+  const dobError = checkDateOfBirth(form.dateOfBirth, today);
+  if (dobError) errors.dateOfBirth = dobError;
 
   return { valid: Object.keys(errors).length === 0, errors };
 }

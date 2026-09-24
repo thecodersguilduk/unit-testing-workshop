@@ -50,3 +50,14 @@ describe('Level 4 – confirm password', () => {
   test('match is fine', () => expect(validate().errors.confirmPassword).toBeUndefined());
 });
 
+describe('Level 5 – age', () => {
+  test('required', () => expect(validate({ dateOfBirth: '' }).errors.dateOfBirth).toBe('Date of birth is required'));
+  test.each(['25/09/2000', '2000-13-01', '2023-02-30', 'yesterday'])('%s is not a valid date', (dateOfBirth) => {
+    expect(validate({ dateOfBirth }).errors.dateOfBirth).toBe('Please enter a valid date');
+  });
+  test('16th birthday today is allowed', () => expect(validate({ dateOfBirth: '2010-09-25' }).errors.dateOfBirth).toBeUndefined());
+  test('16th birthday tomorrow is not', () => {
+    expect(validate({ dateOfBirth: '2010-09-26' }).errors.dateOfBirth).toBe('You must be at least 16 to sign up');
+  });
+});
+
