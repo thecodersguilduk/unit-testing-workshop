@@ -1,5 +1,12 @@
 # Unit Testing with Jest 🧪
 
+> ✅ **You're on the `solutions` branch.** Part 1 has model answers (and the fixed bug-hunt code). Part 2 is *one* suggested solution – yours will differ, and that's fine. To see how TDD built it step by step:
+> ```bash
+> git log --oneline -- part-2-tdd
+> git checkout <commit> -- part-2-tdd   # look at any level
+> ```
+> Have a proper go yourself before peeking – switch back with `git checkout main`.
+
 Group coaching session – **Part 1:** unit testing, **Part 2:** Test-Driven Development (TDD).
 
 ## Getting set up
