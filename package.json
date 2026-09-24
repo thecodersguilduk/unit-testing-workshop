@@ -1,0 +1,29 @@
+{
+  "name": "unit-testing-workshop",
+  "version": "1.0.0",
+  "description": "TCG group coaching session: unit testing with Jest, then TDD",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:part1": "jest part-1-unit-testing",
+    "test:part2": "jest part-2-tdd",
+    "test:coverage": "jest --coverage"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true,
+    "collectCoverageFrom": [
+      "**/*.js",
+      "!**/*.test.js",
+      "!coverage/**",
+      "!node_modules/**"
+    ]
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
