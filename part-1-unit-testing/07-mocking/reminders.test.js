@@ -1,48 +1,62 @@
-/**
- * EXERCISE 07 – Mocks (the tricky one)
- * ------------------------------------
- * We do NOT want our unit tests sending real emails! sendOtjReminders takes its
- * email service as a parameter ("dependency injection"), so we can hand it a FAKE.
- *
- *   const emailService = { send: jest.fn().mockResolvedValue(true) };
- *
- * Then we can ask the fake what happened:
- *   expect(emailService.send).toHaveBeenCalledTimes(1);
- *   expect(emailService.send).toHaveBeenCalledWith('ada@example.com', expect.any(String), expect.stringContaining('Ada'));
- *   expect(emailService.send).not.toHaveBeenCalled();
- *
- * Make a fake fail once:  emailService.send.mockRejectedValueOnce(new Error('SMTP down'));
- *
- * We also inject `now` so the test controls what "today" is – no flaky date tests.
- */
 const { sendOtjReminders } = require('./reminders');
 
 const TODAY = new Date('2026-09-25T09:00:00Z');
 const daysAgo = (n) => new Date(TODAY.getTime() - n * 24 * 60 * 60 * 1000);
-
-let emailService;
 const now = () => TODAY;
+let emailService;
 
 beforeEach(() => {
   emailService = { send: jest.fn().mockResolvedValue(true) };
 });
 
-test('emails a learner who has not logged for 10 days', async () => {
-  const learners = [{ name: 'Ada', email: 'ada@example.com', lastLogDate: daysAgo(10) }];
+const ada = { name: 'Ada', email: 'ada@example.com', lastLogDate: daysAgo(10) };
 
-  const result = await sendOtjReminders(learners, { emailService, now });
-
+test('emails a learner 10 days overdue', async () => {
+  expect(await sendOtjReminders([ada], { emailService, now })).toEqual({ sent: 1, failed: 0 });
   expect(emailService.send).toHaveBeenCalledTimes(1);
-  expect(result).toEqual({ sent: 1, failed: 0 });
 });
 
-test.todo('does NOT email a learner who logged 3 days ago');
-test.todo('exactly 7 days ago does NOT get an email (boundary!)');
-test.todo('the email goes to the right address and mentions the learner by name');
-test.todo('the body says how many days it has been');
-test.todo('skips learners with no email address');
-test.todo('if one email fails, the others still send – and failed is counted');
-test.todo('returns { sent: 0, failed: 0 } for an empty list');
+test('no email if logged 3 days ago', async () => {
+  await sendOtjReminders([{ ...ada, lastLogDate: daysAgo(3) }], { emailService, now });
+  expect(emailService.send).not.toHaveBeenCalled();
+});
 
-// 🌶️ Stretch: instead of injecting `now`, try jest.useFakeTimers() and jest.setSystemTime().
-//    Which approach do you prefer, and why?
+test('exactly 7 days – no email', async () => {
+  await sendOtjReminders([{ ...ada, lastLogDate: daysAgo(7) }], { emailService, now });
+  expect(emailService.send).not.toHaveBeenCalled();
+});
+
+test('right address and name', async () => {
+  await sendOtjReminders([ada], { emailService, now });
+  expect(emailService.send).toHaveBeenCalledWith('ada@example.com', expect.any(String), expect.stringContaining('Ada'));
+});
+
+test('body says how many days', async () => {
+  await sendOtjReminders([ada], { emailService, now });
+  const [, , body] = emailService.send.mock.calls[0];
+  expect(body).toContain('10 days');
+});
+
+test('skips learners with no email', async () => {
+  await sendOtjReminders([{ ...ada, email: '' }], { emailService, now });
+  expect(emailService.send).not.toHaveBeenCalled();
+});
+
+test('one failure does not stop the rest', async () => {
+  emailService.send.mockRejectedValueOnce(new Error('SMTP down'));
+  const alan = { name: 'Alan', email: 'alan@example.com', lastLogDate: daysAgo(20) };
+  const result = await sendOtjReminders([ada, alan], { emailService, now });
+  expect(result).toEqual({ sent: 1, failed: 1 });
+  expect(emailService.send).toHaveBeenCalledTimes(2);
+});
+
+test('empty list', async () => {
+  expect(await sendOtjReminders([], { emailService, now })).toEqual({ sent: 0, failed: 0 });
+});
+
+test('stretch: fake timers instead of injecting now', async () => {
+  jest.useFakeTimers().setSystemTime(TODAY);
+  await sendOtjReminders([ada], { emailService });
+  expect(emailService.send).toHaveBeenCalledTimes(1);
+  jest.useRealTimers();
+});

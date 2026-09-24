@@ -1,30 +1,28 @@
-/**
- * EXERCISE 05 – Bug hunt tests
- * Read the instructions at the top of buggy.js first.
- *
- * Group tip: have ONE person read the spec aloud and the others suggest test cases
- * BEFORE anyone looks at the code.
- *
- * How many bugs did your group find? (There are at least 5.)
- */
 const { isLeapYear, fizzBuzz, average, longestWord } = require('./buggy');
 
 describe('isLeapYear', () => {
-  test('2024 is a leap year', () => {
-    expect(isLeapYear(2024)).toBe(true);
-  });
-
-  test.todo('write tests for every rule in the spec');
+  test.each([
+    [2024, true],
+    [2023, false],
+    [1900, false], // bug 1
+    [2000, true],
+  ])('%i -> %s', (year, expected) => expect(isLeapYear(year)).toBe(expected));
 });
 
 describe('fizzBuzz', () => {
-  test.todo('write tests for every rule in the spec');
+  test('3 -> Fizz', () => expect(fizzBuzz(3)).toBe('Fizz'));
+  test('5 -> Buzz', () => expect(fizzBuzz(5)).toBe('Buzz'));
+  test('15 -> FizzBuzz', () => expect(fizzBuzz(15)).toBe('FizzBuzz')); // bug 2
+  test('7 -> "7" (a string)', () => expect(fizzBuzz(7)).toBe('7')); // bug 3
 });
 
 describe('average', () => {
-  test.todo('write tests for every rule in the spec');
+  test('[2,4,6] -> 4', () => expect(average([2, 4, 6])).toBe(4));
+  test('[] -> 0', () => expect(average([])).toBe(0)); // bug 4
 });
 
 describe('longestWord', () => {
-  test.todo('write tests for every rule in the spec');
+  test('basic', () => expect(longestWord('The quick brown fox')).toBe('quick'));
+  test('tie returns the first', () => expect(longestWord('cat dog')).toBe('cat')); // bug 5
+  test('ignores punctuation', () => expect(longestWord('I love testing!')).toBe('testing')); // bug 6
 });

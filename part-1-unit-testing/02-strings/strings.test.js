@@ -1,38 +1,27 @@
-/**
- * EXERCISE 02 – Testing strings
- * -----------------------------
- * New matchers: toMatch (regex), toHaveLength, toContain
- *
- * Read the comments above each function in strings.js – that's your spec.
- * Test what the spec PROMISES, not just what you think the code does.
- */
 const { capitalise, formatFullName, slugify, truncate } = require('./strings');
 
 describe('capitalise', () => {
-  test('capitalises the first letter of a lowercase word', () => {
-    expect(capitalise('steve')).toBe('Steve');
-  });
-
-  test.todo('lowercases the rest of the word ("sTEVE" -> "Steve")');
-  test.todo('returns an empty string when given an empty string');
+  test('capitalises the first letter', () => expect(capitalise('steve')).toBe('Steve'));
+  test('lowercases the rest', () => expect(capitalise('sTEVE')).toBe('Steve'));
+  test('empty string', () => expect(capitalise('')).toBe(''));
 });
 
 describe('formatFullName', () => {
-  test.todo('joins first and last name with a space');
-  test.todo('trims extra whitespace');
-  test.todo('fixes the capitalisation of both names');
+  test('joins with a space', () => expect(formatFullName('Ada', 'Lovelace')).toBe('Ada Lovelace'));
+  test('trims whitespace', () => expect(formatFullName('  Ada ', ' Lovelace  ')).toBe('Ada Lovelace'));
+  test('fixes capitalisation', () => expect(formatFullName('aDA', 'LOVELACE')).toBe('Ada Lovelace'));
 });
 
 describe('slugify', () => {
-  test.todo('lowercases and replaces spaces with dashes');
-  test.todo('removes punctuation');
-  test.todo('never produces double dashes (try "hello   -  world")');
-  test.todo('only contains lowercase letters, numbers and dashes (use toMatch with a regex)');
+  test('lowercases and dashes', () => expect(slugify('Hello World')).toBe('hello-world'));
+  test('removes punctuation', () => expect(slugify('Hello, World!')).toBe('hello-world'));
+  test('no double dashes', () => expect(slugify('hello   -  world')).not.toMatch(/--/));
+  test('only safe characters', () => expect(slugify("What's New in 2026?")).toMatch(/^[a-z0-9-]+$/));
 });
 
 describe('truncate', () => {
-  test.todo('leaves short text alone');
-  test.todo('adds "..." when the text is too long');
-  test.todo('the result is never longer than max (use toHaveLength)');
-  test.todo('text that is EXACTLY max characters is not truncated');
+  test('leaves short text alone', () => expect(truncate('Hi', 10)).toBe('Hi'));
+  test('adds ...', () => expect(truncate('Hello world', 8)).toBe('Hello...'));
+  test('never longer than max', () => expect(truncate('A very long sentence indeed', 12)).toHaveLength(12));
+  test('exactly max is not truncated', () => expect(truncate('12345', 5)).toBe('12345'));
 });

@@ -1,41 +1,31 @@
-/**
- * EXERCISE 06 – Testing async code
- * --------------------------------
- * If a function returns a Promise, Jest needs to WAIT for it. Two common ways:
- *
- *   test('async/await style', async () => {
- *     const result = await getOtjSummary(1);
- *     expect(result).toBe('...');
- *   });
- *
- *   test('resolves/rejects style', async () => {
- *     await expect(getOtjSummary(1)).resolves.toBe('...');
- *     await expect(getOtjSummary(999)).rejects.toThrow('Learner not found');
- *   });
- *
- * ⚠️ Trap: forget the `await` / `async` and your test can pass even when it's wrong!
- *    Try it: remove the `await` from the example below and change the expected value
- *    to something silly. Does the test still pass? Why?
- */
 const { fetchLearner, getOtjSummary, hasMetOtjTarget } = require('./learnerService');
 
 describe('fetchLearner', () => {
-  test('resolves with the learner for a known id', async () => {
+  test('known id', async () => {
     const learner = await fetchLearner(1);
     expect(learner.name).toBe('Ada Lovelace');
   });
-
-  test.todo('rejects with "Learner not found" for an unknown id');
+  test('unknown id rejects', async () => {
+    await expect(fetchLearner(999)).rejects.toThrow('Learner not found');
+  });
 });
 
 describe('getOtjSummary', () => {
-  test.todo('returns the summary string for Ada (40%)');
-  test.todo('shows 100% for a learner who has hit their target');
-  test.todo('handles a learner with 0 hours logged');
-  test.todo('rejects for an unknown learner');
+  test('Ada at 40%', async () => {
+    await expect(getOtjSummary(1)).resolves.toBe('Ada Lovelace: 120/300 OTJ hours (40%)');
+  });
+  test('100% on target', async () => {
+    expect(await getOtjSummary(2)).toContain('(100%)');
+  });
+  test('0 hours', async () => {
+    expect(await getOtjSummary(3)).toBe('Grace Hopper: 0/280 OTJ hours (0%)');
+  });
+  test('unknown rejects', async () => {
+    await expect(getOtjSummary(42)).rejects.toThrow('Learner not found');
+  });
 });
 
 describe('hasMetOtjTarget', () => {
-  test.todo('true when hours logged equals the target');
-  test.todo('false when under target');
+  test('equal to target is true', async () => expect(await hasMetOtjTarget(2)).toBe(true));
+  test('under target is false', async () => expect(await hasMetOtjTarget(1)).toBe(false));
 });
