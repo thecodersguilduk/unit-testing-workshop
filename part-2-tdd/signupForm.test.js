@@ -24,3 +24,10 @@ describe('Level 1 – required fields', () => {
   test('email is required', () => expect(validate({ email: '' }).errors.email).toBe('Email is required'));
 });
 
+describe('Level 2 – email format', () => {
+  test.each(['ada', 'ada@', '@example.com', 'ada@example', 'ada lovelace@example.com'])('%s is invalid', (email) => {
+    expect(validate({ email }).errors.email).toBe('Please enter a valid email address');
+  });
+  test('a@b.co is valid', () => expect(validate({ email: 'a@b.co' }).errors.email).toBeUndefined());
+});
+
