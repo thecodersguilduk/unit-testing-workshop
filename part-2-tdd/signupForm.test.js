@@ -61,3 +61,11 @@ describe('Level 5 – age', () => {
   });
 });
 
+describe('Level 6 – all together', () => {
+  test('a valid form is valid with no errors', () => expect(validate()).toEqual({ valid: true, errors: {} }));
+  test('reports every error at once', () => {
+    const result = validateSignup({}, { today: TODAY });
+    expect(result.valid).toBe(false);
+    expect(Object.keys(result.errors).sort()).toEqual(['dateOfBirth', 'email', 'firstName', 'lastName', 'password']);
+  });
+});
