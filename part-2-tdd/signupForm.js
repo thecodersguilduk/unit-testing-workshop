@@ -1,13 +1,15 @@
-/**
- * Validates the sign-up form. See CHALLENGE.md for the full spec.
- *
- * @param {object} form  – the raw form values (all strings)
- * @param {object} options
- * @param {Date}   options.today – the current date (injected so tests can control it)
- * @returns {{ valid: boolean, errors: object }}
- */
-function validateSignup(form, { today = new Date() } = {}) {
-  throw new Error('Not implemented yet – write a failing test first! 🔴');
+// Suggested solution – one of many valid approaches. See CHALLENGE.md for the spec.
+
+const isBlank = (value) => typeof value !== 'string' || value.trim() === '';
+
+function validateSignup(form = {}, { today = new Date() } = {}) {
+  const errors = {};
+
+  if (isBlank(form.firstName)) errors.firstName = 'First name is required';
+  if (isBlank(form.lastName)) errors.lastName = 'Last name is required';
+  if (isBlank(form.email)) errors.email = 'Email is required';
+
+  return { valid: Object.keys(errors).length === 0, errors };
 }
 
 module.exports = { validateSignup };
