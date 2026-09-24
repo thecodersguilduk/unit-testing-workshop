@@ -48,6 +48,8 @@ It returns:
 
 ## Requirements – work through them in order
 
+> ⏱️ In the session, aim for **Levels 1–4**. Levels 5–6 and the stretch goals are take-away.
+
 ### Level 1 – Required fields
 - `firstName`, `lastName` and `email` are required.
 - A field that's missing, empty, or only spaces counts as missing.

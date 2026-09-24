@@ -53,11 +53,15 @@ Each exercise gets a bit harder. Every test file has instructions at the top, on
 | 06 | `06-async` – OTJ learner service | Testing Promises with `async`/`await`, `resolves`/`rejects` |
 | 07 | `07-mocking` 🌶️ – OTJ reminder emails | `jest.fn()`, mocks, dependency injection, controlling time |
 
-Don't worry if your group doesn't finish them all – quality over quantity.
+**In the session:** aim for 01–04, then jump to 05 (bug hunt) if you've got time. Don't rush – quality over quantity.
+
+**Take-away:** finish whatever's left after the session, especially 06 (async) and 07 (mocking). Commit and push as you go.
 
 ## Part 2 – TDD
 
 Open [`part-2-tdd/CHALLENGE.md`](part-2-tdd/CHALLENGE.md). You'll build sign-up form validation **tests first**.
+
+**In the session:** aim for Levels 1–4. Levels 5–6 and the stretch goals are yours to take away.
 
 ## What makes a good unit test?
 
