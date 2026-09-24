@@ -24,6 +24,8 @@ function validateSignup(form = {}, { today = new Date() } = {}) {
   const passwordError = checkPassword(form.password);
   if (passwordError) errors.password = passwordError;
 
+  if (form.confirmPassword !== form.password) errors.confirmPassword = 'Passwords do not match';
+
   return { valid: Object.keys(errors).length === 0, errors };
 }
 

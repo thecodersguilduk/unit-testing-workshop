@@ -45,3 +45,8 @@ describe('Level 3 – password', () => {
   });
 });
 
+describe('Level 4 – confirm password', () => {
+  test('mismatch', () => expect(validate({ confirmPassword: 'Engines1844' }).errors.confirmPassword).toBe('Passwords do not match'));
+  test('match is fine', () => expect(validate().errors.confirmPassword).toBeUndefined());
+});
+
