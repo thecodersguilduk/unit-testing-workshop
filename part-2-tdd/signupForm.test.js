@@ -31,3 +31,17 @@ describe('Level 2 – email format', () => {
   test('a@b.co is valid', () => expect(validate({ email: 'a@b.co' }).errors.email).toBeUndefined());
 });
 
+describe('Level 3 – password', () => {
+  test.each([
+    ['', 'Password is required'],
+    ['Ab1', 'Password must be at least 8 characters'],
+    ['Abcdefgh', 'Password must contain a number'],
+    ['abcdefg1', 'Password must contain an uppercase letter'],
+  ])('"%s" -> %s', (password, message) => {
+    expect(validate({ password, confirmPassword: password }).errors.password).toBe(message);
+  });
+  test('reports only the first failing rule', () => {
+    expect(validate({ password: 'abc', confirmPassword: 'abc' }).errors.password).toBe('Password must be at least 8 characters');
+  });
+});
+
